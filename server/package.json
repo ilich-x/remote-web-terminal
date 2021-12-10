@@ -1,0 +1,21 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run server": "nodemon server.js"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-pty": "^0.10.1",
+    "nodemon": "^2.0.12",
+    "ws": "^8.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0"
+  }
+}
