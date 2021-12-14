@@ -10,7 +10,7 @@ import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 // import { AttachAddon } from 'xterm-addon-attach';
 import 'xterm/css/xterm.css';
-import LocalEchoController from 'local-echo';
+import LocalEchoController from '/Users/i.nazarov/Documents/dev/JS/web-socket-playground/client/node_modules/local-echo/lib/LocalEchoController';
 
 // interface Term extends Terminal {
 //   setPrompt?(newPrompt: string): void;
@@ -43,6 +43,8 @@ export const WebSocketDemo = () => {
         console.log({ serverSend: v });
 
         const { type, message } = JSON.parse(v.data);
+        // term.write(message);
+        // return;
         if (type === '1') {
           term.setPrompt(message);
           // localEcho.println('prompt changed');
@@ -135,11 +137,8 @@ export const WebSocketDemo = () => {
     };
     readTerminal();
     // term.onData((v) => {
-    //   // console.warn(v);
-    //   if (v.includes('^C')) {
-    //     setCommand('\x03');
-    //   }
-    //   command = v;
+    // term.write(v, () => sendMessage(v));
+    //   sendMessage(v);
     // });
 
     return () => {

@@ -1,4 +1,4 @@
-import { parse } from "shell-quote";
+import { parse } from 'shell-quote';
 
 /**
  * Detects all the word boundaries on the given input
@@ -26,11 +26,11 @@ export function wordBoundaries(input, leftSide = true) {
 export function closestLeftBoundary(input, offset) {
   const found = wordBoundaries(input, true)
     .reverse()
-    .find(x => x < offset);
+    .find((x) => x < offset);
   return found == null ? 0 : found;
 }
 export function closestRightBoundary(input, offset) {
-  const found = wordBoundaries(input, false).find(x => x > offset);
+  const found = wordBoundaries(input, false).find((x) => x > offset);
   return found == null ? input.length : found;
 }
 
@@ -41,12 +41,12 @@ export function closestRightBoundary(input, offset) {
  * the navigation on the terminal, wrapping when they reach the column width.
  */
 export function offsetToColRow(input, offset, maxCols) {
-  let row = 0,
-    col = 0;
+  let row = 0;
+  let col = 0;
 
-  for (let i = 0; i < offset; ++i) {
+  for (let i = 0; i < offset; i++) {
     const chr = input.charAt(i);
-    if (chr == "\n") {
+    if (chr === '\n') {
       col = 0;
       row += 1;
     } else {
@@ -80,7 +80,7 @@ export function countLines(input, maxCols) {
  */
 export function isIncompleteInput(input) {
   // Empty input is not incomplete
-  if (input.trim() == "") {
+  if (input.trim() === '') {
     return false;
   }
 
@@ -97,12 +97,12 @@ export function isIncompleteInput(input) {
     input
       .split(/(\|\||\||&&)/g)
       .pop()
-      .trim() == ""
+      .trim() === ''
   ) {
     return true;
   }
   // Check for tailing slash
-  if (input.endsWith("\\") && !input.endsWith("\\\\")) {
+  if (input.endsWith('\\') && !input.endsWith('\\\\')) {
     return true;
   }
 
@@ -121,12 +121,12 @@ export function hasTailingWhitespace(input) {
  */
 export function getLastToken(input) {
   // Empty expressions
-  if (input.trim() === "") return "";
-  if (hasTailingWhitespace(input)) return "";
+  if (input.trim() === '') return '';
+  if (hasTailingWhitespace(input)) return '';
 
   // Last token
   const tokens = parse(input);
-  return tokens.pop() || "";
+  return tokens.pop() || '';
 }
 
 /**
@@ -135,16 +135,16 @@ export function getLastToken(input) {
 export function collectAutocompleteCandidates(callbacks, input) {
   const tokens = parse(input);
   let index = tokens.length - 1;
-  let expr = tokens[index] || "";
+  let expr = tokens[index] || '';
 
   // Empty expressions
-  if (input.trim() === "") {
+  if (input.trim() === '') {
     index = 0;
-    expr = "";
+    expr = '';
   } else if (hasTailingWhitespace(input)) {
     // Expressions with danging space
     index += 1;
-    expr = "";
+    expr = '';
   }
 
   // Collect all auto-complete candidates from the callbacks
@@ -152,29 +152,26 @@ export function collectAutocompleteCandidates(callbacks, input) {
     try {
       return candidates.concat(fn(index, tokens, ...args));
     } catch (e) {
-      console.error("Auto-complete error:", e);
+      console.error('Auto-complete error:', e);
       return candidates;
     }
   }, []);
 
   // Filter only the ones starting with the expression
-  return all.filter(txt => txt.startsWith(expr));
+  return all.filter((txt) => txt.startsWith(expr));
 }
 
-
 export function getSharedFragment(fragment, candidates) {
-
   // end loop when fragment length = first candidate length
   if (fragment.length >= candidates[0].length) return fragment;
-  
+
   // save old fragemnt
   const oldFragment = fragment;
-  
+
   // get new fragment
-  fragment += candidates[0].slice(fragment.length, fragment.length+1);
+  fragment += candidates[0].slice(fragment.length, fragment.length + 1);
 
-  for (let i=0; i<candidates.length; i++ ) {
-
+  for (let i = 0; i < candidates.length; i++) {
     // return null when there's a wrong candidate
     if (!candidates[i].startsWith(oldFragment)) return null;
 

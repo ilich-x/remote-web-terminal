@@ -9,18 +9,8 @@ const wss = new WebSocketServer({ port: 8080 });
 
 // var ptyProcess = pty.spawn(shell, [], {
 //   name: 'xterm-color',
-//   // cols: 80,
-//   // rows: 30,
-//   // cwd: process.env.HOME,
-//   // env: process.env
-// });
-
-// ptyProcess.write('ping ya.ru\r');
-// setTimeout(() => {
-//   ptyProcess.write('\x03\r');
-// }, 2000);
-// ptyProcess.on('data', function (data) {
-//   console.log('log:', data);
+//   // cols: 130,
+//   // rows: 24,
 // });
 
 wss.on('connection', function connection(ws) {
@@ -32,23 +22,8 @@ wss.on('connection', function connection(ws) {
     console.log('-------');
     console.log('received:', message);
 
-    // ptyProcess.write(buffer + '\r');
-    // ptyProcess.on('data', function (data) {
-    //   console.log('log:', data);
-    //   // if (!data.includes('bash-3.2$')) {
-    //   // }
-    //   ws.send(JSON.stringify({ message: data, type: '0' }));
-    // });
-
-    // exec(message.toString(), (error, stdout, stderr) => {
-    //   if (error) {
-    //     console.error(`exec error: ${error}`);
-    //     ws.send(stdout);
-    //   }
-
-    //   ws.send(stdout);
-    //   console.log(`stdout: ${stdout}`);
-    // });
+    // ptyProcess.write(buffer);
+    // ptyProcess.write(message + '\r');
 
     const ls = spawn(commandWithArgsArray[0], commandWithArgsArray.slice(1), {
       shell: true,
@@ -69,15 +44,22 @@ wss.on('connection', function connection(ws) {
     });
 
     ls.on('close', (code) => {
-      ws.send(
-        JSON.stringify({
-          message: `child process exited with code ${code}`,
-          type: '0',
-        })
-      );
+      // ws.send(
+      //   JSON.stringify({
+      //     message: `child process exited with code ${code}`,
+      //     type: '0',
+      //   })
+      // );
       console.log(`child process exited with code ${code}`);
     });
   });
+  // ptyProcess.on('data', function (data) {
+  //   console.log('log:', data);
+  //   // if (!data.includes('bash-3.2$')) {
+  //   // }
+  //   // ws.send(data);
+  //   ws.send(JSON.stringify({ message: data, type: '0' }));
+  // });
 
   // setInterval(() => {
   //   console.log('timer');
