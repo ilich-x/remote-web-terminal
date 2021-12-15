@@ -10,7 +10,7 @@ import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 // import { AttachAddon } from 'xterm-addon-attach';
 import 'xterm/css/xterm.css';
-import LocalEchoController from '/Users/i.nazarov/Documents/dev/JS/web-socket-playground/client/node_modules/local-echo/lib/LocalEchoController';
+import LocalEchoController from 'local-echo';
 
 // interface Term extends Terminal {
 //   setPrompt?(newPrompt: string): void;

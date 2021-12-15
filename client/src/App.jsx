@@ -1,21 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css';
-// import { WebSocketDemo } from './components/ws';
-import { WebSocketDemo } from './components/cmdWithInputController';
+// import { WebSocketDemo } from './components/wsLocalEcho';
+import { WebSocketDemo } from './components/CMD';
 
 function App() {
-  let socket;
-  // useEffect(() => {
-  //   socket = new WebSocket('ws://localhost:8080');
-
-  //   return () => {
-  //     socket.close();
-  //   };
-  // }, []);
-
   return (
     <div className="App">
-      {/* <input type="text" onChange={() => {}} /> */}
       <WebSocketDemo />
     </div>
   );

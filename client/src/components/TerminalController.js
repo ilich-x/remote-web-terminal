@@ -12,6 +12,8 @@ import {
 } from './Utils';
 
 /**
+ * Modified version of https://github.com/wavesoft/local-echo
+ *
  * A local terminal controller is responsible for displaying messages
  * and handling local echo for the terminal.
  *
@@ -19,8 +21,6 @@ import {
  * - Arrow navigation on the input
  * - Alt-arrow for word-boundary navigation
  * - Alt-backspace for word-boundary deletion
- * - Multi-line input for incomplete commands
- * - Auto-complete hooks
  */
 export default class TerminalController {
   constructor(options = {}) {
@@ -108,8 +108,6 @@ export default class TerminalController {
     this.term.write('\r\n');
     this.input = '';
     this.cursor = 0;
-    // this.printPrompt();
-    // this.active = false;
   }
 
   /**
@@ -150,8 +148,8 @@ export default class TerminalController {
    * and move the cursor in the beginning of the first line of the prompt.
    */
   clearInput() {
-    // const currentPrompt = this.applyPrompts(this.input);
-    const currentPrompt = this.prompt;
+    const currentPrompt = this.applyPrompts(this.input);
+    // const currentPrompt = this.prompt;
 
     // Get the overall number of lines to clear
     const allRows = countLines(currentPrompt, this.termSize.cols);
@@ -224,13 +222,14 @@ export default class TerminalController {
    * This function:
    * - Calculates the previous and current
    */
-  setCursor(newCursor) {
+  setCursor(cursor) {
+    let newCursor = cursor;
     if (newCursor < 0) newCursor = 0;
     if (newCursor > this.input.length) newCursor = this.input.length;
 
     // Apply prompt formatting to get the visual status of the display
     const inputWithPrompt = this.applyPrompts(this.input);
-    const inputLines = countLines(inputWithPrompt, this.termSize.cols);
+    // const inputLines = countLines(inputWithPrompt, this.termSize.cols);
 
     // Estimate previous cursor position
     const prevPromptOffset = this.applyPromptOffset(this.input, this.cursor);
@@ -250,16 +249,24 @@ export default class TerminalController {
 
     // Adjust vertically
     if (newRow > prevRow) {
-      for (let i = prevRow; i < newRow; ++i) this.term.write('\x1B[B');
+      for (let i = prevRow; i < newRow; i++) {
+        this.term.write('\x1B[B');
+      }
     } else {
-      for (let i = newRow; i < prevRow; ++i) this.term.write('\x1B[A');
+      for (let i = newRow; i < prevRow; i++) {
+        this.term.write('\x1B[A');
+      }
     }
 
     // Adjust horizontally
     if (newCol > prevCol) {
-      for (let i = prevCol; i < newCol; ++i) this.term.write('\x1B[C');
+      for (let i = prevCol; i < newCol; i++) {
+        this.term.write('\x1B[C');
+      }
     } else {
-      for (let i = newCol; i < prevCol; ++i) this.term.write('\x1B[D');
+      for (let i = newCol; i < prevCol; i++) {
+        this.term.write('\x1B[D');
+      }
     }
 
     // Set new offset
