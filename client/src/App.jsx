@@ -1,11 +1,11 @@
 import React from 'react';
-import { WebSocketDemo } from './components/CMD';
+import { Terminal } from './components/Terminal';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <WebSocketDemo />
+      <Terminal />
     </div>
   );
 }
