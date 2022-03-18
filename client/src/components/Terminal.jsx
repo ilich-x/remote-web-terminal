@@ -7,7 +7,7 @@ import 'xterm/css/xterm.css';
 const MSG_INPUT = 1;
 const MSG_RESIZE = 2;
 
-export const Terminal = () => {
+export const TerminalComponent = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const termRef = useRef(null);
   const fitAddonRef = useRef(null);
