@@ -1,7 +1,6 @@
 import React from 'react';
-import './App.css';
-// import { WebSocketDemo } from './components/wsLocalEcho';
 import { WebSocketDemo } from './components/CMD';
+import './App.css';
 
 function App() {
   return (

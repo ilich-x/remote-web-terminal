@@ -7,12 +7,10 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "local-echo": "github:wavesoft/local-echo",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-use-websocket": "^2.8.0",
     "xterm": "^4.15.0",
-    "xterm-addon-attach": "^0.6.0",
     "xterm-addon-fit": "^0.5.0"
   },
   "devDependencies": {

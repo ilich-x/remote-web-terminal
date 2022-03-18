@@ -1,81 +1,91 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
-// import { AttachAddon } from 'xterm-addon-attach';
 import 'xterm/css/xterm.css';
-// import TerminalController from './TerminalController';
 
-// let term = null;
-// let terminalController = null;
+const MSG_INPUT = 1;
+const MSG_RESIZE = 2;
 
 export const WebSocketDemo = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const termRef = useRef(null);
+  const fitAddonRef = useRef(null);
   const terminalContainerRef = useRef(null);
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(
+  const { getWebSocket, sendMessage, readyState } = useWebSocket(
     'ws://localhost:8080',
     {
       onOpen: () => {
-        // term.prompt();
+        getWebSocket().binaryType = 'arraybuffer';
+
+        sendMessage(
+          new TextEncoder().encode(
+            MSG_RESIZE +
+              JSON.stringify({
+                cols: termRef.current?.cols,
+                rows: termRef.current?.rows,
+              })
+          )
+        );
+        termRef.current.focus();
       },
       onMessage: (v) => {
-        termRef.current.write(v.data);
-
-        // const { type, message } = JSON.parse(v.data);
-        // terminalController.print(message);
-        // // terminalController.print('\r\n');
-        // terminalController.printPrompt();
-        // if (type === '1') {
-        //   // term.setPrompt(message);
-        // } else {
-        //   // term.writeln(message);
-        //   // localEcho.print('\r\n');
-        //   // localEcho.print(message);
-        // }
+        termRef.current.write(new Uint8Array(v.data));
       },
       shouldReconnect: () => true,
     }
   );
 
-  const connectionStatus = ReadyState[readyState];
-
   useEffect(() => {
     termRef.current = new Terminal({
       cursorBlink: true,
-      // fontFamily: 'Roboto Mono',
-      // theme: { background: '#FFFFFF', foreground: '#363636' },
     });
-    // terminalController = new TerminalController({
-    //   onEnterCallback: sendMessage,
-    // });
-    // term.loadAddon(terminalController);
-    const fitAddon = new FitAddon();
-    termRef.current.loadAddon(fitAddon);
-    termRef.current.open(terminalContainerRef.current);
-    fitAddon.fit();
-    termRef.current.focus();
 
-    // console.log(term);
+    fitAddonRef.current = new FitAddon();
+    termRef.current.loadAddon(fitAddonRef.current);
+    termRef.current.open(terminalContainerRef.current);
+    fitAddonRef.current.fit();
+
+    const textEncoder = new TextEncoder();
     termRef.current.onData((v) => {
-      sendMessage(v);
+      sendMessage(textEncoder.encode(MSG_INPUT + v));
     });
+    termRef.current.onResize((dim) =>
+      sendMessage(textEncoder.encode(MSG_RESIZE + JSON.stringify(dim)))
+    );
 
     return () => {
       termRef.current.dispose();
     };
   }, []);
 
+  useEffect(() => {
+    fitAddonRef.current?.fit();
+  }, [isExpanded]);
+
+  const styles = isExpanded
+    ? { width: '100%', height: '100%' }
+    : { width: '800px', height: '400px' };
+
   return (
-    <div>
-      <span>The WebSocket is currently {connectionStatus}</span>
-      <br />
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateRows: 'min-content auto 1fr',
+        height: '100%',
+      }}
+    >
+      <button type="button" onClick={() => setIsExpanded(!isExpanded)}>
+        {isExpanded ? 'Collapse' : 'Expand'}
+      </button>
+      <span>The WebSocket is currently {ReadyState[readyState]}</span>
       <div
         id="terminal-container"
         className="terminal"
+        style={styles}
         ref={terminalContainerRef}
       />
-      {lastMessage ? <span>Last message: {lastMessage.data}</span> : null}
     </div>
   );
 };
