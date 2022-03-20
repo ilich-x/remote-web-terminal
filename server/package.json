@@ -12,10 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "node-pty": "^0.10.1",
-    "nodemon": "^2.0.12",
-    "ws": "^8.2.2"
+    "ws": "^8.5.0"
   },
   "devDependencies": {
-    "eslint": "^7.32.0"
+    "eslint": "^8.11.0",
+    "nodemon": "^2.0.15"
   }
 }

@@ -14,6 +14,7 @@ module.exports = {
   plugins: ['react', 'prettier'],
   rules: {
     'import/prefer-default-export': 'off',
+    'react/function-component-definition': 'off',
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'react/no-array-index-key': 'warn',
     'react/no-unescaped-entities': 'warn',
